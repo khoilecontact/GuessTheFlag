@@ -16,6 +16,8 @@ struct ContentView: View {
     @State private var userScore = 10
     @State private var notifyResult = ""
     
+    @State private var animationAmmount = 0.0
+    
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color.orange, Color.pink]), startPoint: .top, endPoint: .bottom).ignoresSafeArea(.all)
@@ -32,13 +34,20 @@ struct ContentView: View {
                 
                 ForEach(0..<3) { number in
                     Button(action: {
-                        self.flagTapped(number)
+                        withAnimation {
+                            self.flagTapped(number)
+                            self.animationAmmount += 360
+                        }
                     }) {
                         Image(self.contries[number])
                             .renderingMode(.original)
                             .clipShape(Capsule())
                             .overlay(Capsule().stroke(Color.black, lineWidth: 1))
                             .shadow(color: .black, radius: 2)
+                            .rotation3DEffect(
+                                .degrees(number == correctAnswer ? animationAmmount : 0),
+                                 axis: (x:0, y: 1, z: 0)
+                            )
                     }
                 }
                 Spacer()
